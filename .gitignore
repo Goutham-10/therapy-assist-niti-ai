@@ -40,3 +40,5 @@ node_modules/
 
 # Ignore sensitive app files
 prompt_tracker.json
+new-ec2-key.pem
+new-ec2-key.pem.pub

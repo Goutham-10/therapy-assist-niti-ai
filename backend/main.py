@@ -46,25 +46,26 @@ def analyze_entry(entry: JournalEntryRequest):
             "topics": [],
             "cognitive_patterns": [],
             "suggested_questions": [],
+            "tip": "Try adding a few more sentences to express your thoughts.",
             "raw_input": entry.raw_input,
-            "date": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-            "user_id": entry.user_id
+            "user_id": entry.user_id,
+            "date": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         }
 
     insights = extract_insights(entry.raw_input)
 
-    # ✅ Add raw_input and user_id to the result
     insights["raw_input"] = entry.raw_input
     insights["user_id"] = entry.user_id
+    insights["source"] = entry.source
 
-    # Save to DB
     store_entry(insights)
 
     return insights
 
-from fastapi import Body
+
 
 from fastapi import Body
+
 
 
 @app.post("/feedback")

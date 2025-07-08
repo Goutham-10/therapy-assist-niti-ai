@@ -10,10 +10,10 @@ OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
 MODEL_NAME = "mistralai/mistral-7b-instruct"
 API_URL = "https://openrouter.ai/api/v1/chat/completions"
 
+# In analyzer.py
 def extract_insights(text: str) -> dict:
     """Analyze journal text using LLM and return structured insights."""
 
-    # Prompt for the LLM
     journal_prompt = {
         "role": "user",
         "content": f"""
@@ -58,20 +58,23 @@ Journal Entry:
         raw_content = response.json()["choices"][0]["message"]["content"]
         insights = json.loads(raw_content.strip())
 
-        # Validate and fill missing keys
-        required_fields = ["summary", "emotions", "topics", "cognitive_patterns", "suggested_questions"]
-        for field in required_fields:
-            insights.setdefault(field, [])
-
     except Exception as e:
         print("[Analyzer] Error extracting insights:", e)
-        insights = {
-            "summary": "Unable to analyze.",
-            "emotions": [],
-            "topics": [],
-            "cognitive_patterns": [],
-            "suggested_questions": []
-        }
+        insights = {}
+
+    # ✅ Ensure all expected fields are present
+    defaults = {
+        "summary": "Unable to summarize.",
+        "emotions": [],
+        "topics": [],
+        "cognitive_patterns": [],
+        "suggested_questions": [],
+        "tip": "Reflect on one small thing that went okay today — even if it’s tiny."
+    }
+
+    for key, value in defaults.items():
+        insights.setdefault(key, value)
 
     insights["date"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
     return insights
