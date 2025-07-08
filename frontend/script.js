@@ -9,8 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const promptText = document.getElementById("prompt");
 
   // Insights & History UI
-  const insightsBox = document.getElementById("insights");
-  const resultBox = document.getElementById("resultBox");
+
   const tipBox = document.getElementById("tipBox");
   const historyBox = document.getElementById("historyBox");
   const historyTable = document.getElementById("historyTable");
@@ -43,7 +42,12 @@ document.addEventListener("DOMContentLoaded", () => {
   submitBtn.addEventListener("click", () => {
     const input = journalInput.value.trim();
     const userId = userIdInput.value.trim();
+  
     if (!input || !userId) return alert("Please enter both User ID and journal entry.");
+  
+    // Show loading message
+    tipBox.classList.remove("hidden");
+    tipBox.innerHTML = `<span class="animate-pulse">⏳ Analyzing your entry...</span>`;
   
     fetch("/analyze", {
       method: "POST",
@@ -51,33 +55,25 @@ document.addEventListener("DOMContentLoaded", () => {
       body: JSON.stringify({ user_id: userId, raw_input: input, source: "text" }),
     })
       .then(async res => {
-        const data = await res.json();
-  
-        // 👀 Check for server-side failure even if status = 200
-        if (!res.ok || !data.summary) {
-          throw new Error("Invalid response from server.");
+        if (!res.ok) {
+          const errorText = await res.text();
+          throw new Error(`HTTP ${res.status}: ${errorText}`);
         }
-  
-        // ✅ Show insights
-        insightsBox.classList.remove("hidden");
-        resultBox.textContent = JSON.stringify(data, null, 2);
-  
-        // ✅ Show tip if available
-        const tipBox = document.getElementById("tipBox");
-        tipBox.classList.remove("hidden");
-        tipBox.textContent = `💡 Tip: ${data.tip || "No tip available."}`;
+        return res.json();
+      })
+      .then(data => {
+        tipBox.textContent = `💡 Tip: ${data.tip || "Reflect on your thoughts a bit more."}`;
       })
       .catch(err => {
-        console.warn("Submission error:", err.message);
-  
-        // 🎯 Graceful fallback message
-        const tipBox = document.getElementById("tipBox");
-        tipBox.classList.remove("hidden");
-        tipBox.textContent = "⚠️ Your entry was saved, but insights may not be complete.";
+        tipBox.textContent = `⚠️ Something went wrong: ${err.message}`;
       });
   });
   
   
+  
+  
+
+
 
   // ─────────────────────────────────────────────────────────────
   // 📚 VIEW JOURNAL HISTORY
@@ -106,7 +102,6 @@ document.addEventListener("DOMContentLoaded", () => {
               <td class="border px-2 py-1">${(entry.emotions || []).join(", ")}</td>
               <td class="border px-2 py-1">${(entry.topics || []).join(", ")}</td>
               <td class="border px-2 py-1">${entry.summary || "—"}</td>
-              <td class="border px-2 py-1">${entry.feedback || "—"}</td>
             </tr>`;
           historyTable.innerHTML += row;
         });
