@@ -1,36 +1,22 @@
+
 # backend/main.py
 
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse, JSONResponse
+from fastapi import FastAPI, Body, Request, HTTPException
 from fastapi.staticfiles import StaticFiles
-
-from backend.models import JournalEntryRequest, JournalEntry
+from fastapi.responses import FileResponse, JSONResponse, HTMLResponse 
+from fastapi.middleware.cors import CORSMiddleware
 from backend.analyzer import extract_insights
-from backend.db import (
-    store_entry,
-    get_recent_entries,
-    get_all_user_ids,
-    get_entries_by_user,
-    collection,
-)
+from backend.db import store_entry, get_recent_entries, get_all_user_ids, collection
+from backend.models import JournalEntryRequest, FeedbackRequest, JournalEntry
+import random, os, datetime, json
+from backend.utils import load_daily_prompt
+from bson.objectid import ObjectId
 
-import datetime
-import os
-import json
-from collections import Counter
+from dotenv import load_dotenv
+load_dotenv()
 
-# --- 🔒 Risk Phrase Detection ---
-RISK_KEYWORDS = [
-    "suicide", "kill myself", "give up", "worthless", "hopeless",
-    "nothing matters", "end it all", "self-harm", "hurting myself", "can't go on"
-]
+THERAPIST_SECRET_KEY = os.environ["THERAPIST_SECRET_KEY"] 
 
-def detect_risk(text: str) -> bool:
-    lowered = text.lower()
-    return any(kw in lowered for kw in RISK_KEYWORDS)
-
-# --- 🚀 App Initialization ---
 app = FastAPI()
 
 app.add_middleware(
@@ -42,91 +28,118 @@ app.add_middleware(
 
 app.mount("/static", StaticFiles(directory="frontend"), name="static")
 
-# --- 🧾 Frontend Routes ---
 @app.get("/")
-def serve_client_page():
+def serve_frontend():
     return FileResponse(os.path.join("frontend", "index.html"))
 
-@app.get("/therapist")
-def serve_therapist_page():
-    return FileResponse("frontend/therapist.html")
+@app.get("/therapist", response_class=HTMLResponse)
+async def get_therapist_page():
+    with open("frontend/therapist.html", "r", encoding="utf-8") as f:
+        return HTMLResponse(content=f.read(), status_code=200)
 
-# --- 📬 Journal Entry Submission ---
 @app.post("/analyze", response_model=JournalEntry)
 def analyze_entry(entry: JournalEntryRequest):
     if len(entry.raw_input.strip().split()) < 5:
-        return {"message": "Entry too short. Can you describe your thoughts in a bit more detail?"}
+        return {
+            "summary": "Entry too short. Can you describe your thoughts in a bit more detail?",
+            "emotions": [],
+            "topics": [],
+            "cognitive_patterns": [],
+            "suggested_questions": [],
+            "raw_input": entry.raw_input,
+            "date": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "user_id": entry.user_id
+        }
 
     insights = extract_insights(entry.raw_input)
-    insights.update({
-        "user_id": entry.user_id,
-        "raw_input": entry.raw_input,
-        "source": entry.source,
-        "flagged": detect_risk(entry.raw_input),
-    })
 
+    # ✅ Add raw_input and user_id to the result
+    insights["raw_input"] = entry.raw_input
+    insights["user_id"] = entry.user_id
+
+    # Save to DB
     store_entry(insights)
+
     return insights
 
-# --- 📅 Daily Prompt ---
+from fastapi import Body
+
+from fastapi import Body
+
+
+@app.post("/feedback")
+def save_feedback(data: FeedbackRequest):
+    try:
+        result = collection.update_one(
+            {"_id": ObjectId(data.entry_id)},
+            {"$set": {"therapist_feedback": data.feedback}}
+        )
+        if result.matched_count == 0:
+            raise HTTPException(status_code=404, detail="Entry not found")
+        return {"success": True}
+    except Exception as e:
+        print("Error saving feedback:", e)
+        raise HTTPException(status_code=500, detail="Failed to save feedback")
+
+
+
 @app.get("/prompt")
 def get_prompt():
-    try:
-        path = os.path.join(os.path.dirname(__file__), "../prompts/daily_prompts.json")
-        with open(path) as f:
-            prompts = json.load(f)
-        today_index = datetime.date.today().toordinal() % len(prompts)
-        return {"prompt": prompts[today_index]}
-    except Exception as e:
-        return {"error": str(e)}
+    return {"prompt": load_daily_prompt()}
 
-# --- 🧪 Sample Entry ---
-@app.get("/sample")
-def insert_sample():
-    sample = {
-        "user_id": "demo_user",
-        "raw_input": "I felt unsupported this week during group meetings...",
-        "summary": "Client felt emotionally isolated at work.",
-        "emotions": ["frustration", "loneliness"],
-        "topics": ["workplace", "self-worth"],
-        "date": "2025-07-07",
-        "source": "text",
-        "flagged": False
-    }
-    store_entry(sample)
-    return {"status": "ok"}
 
-# --- 📜 Journal Logs ---
 @app.get("/log")
-def fetch_all_recent():
+def fetch_journal_history():
     entries = get_recent_entries(limit=10)
     return JSONResponse(content=entries)
 
-@app.get("/log/{user_id}")
-def fetch_by_user(user_id: str):
-    return get_entries_by_user(user_id)
 
 @app.get("/clients")
-def fetch_clients():
-    return {"clients": get_all_user_ids()}
+def list_clients():
+    users = get_all_user_ids()
+    return {"clients": users}
 
-# --- 📈 Stats ---
+@app.get("/log/{user_id}")
+def get_entries_by_user(user_id: str):
+    cursor = collection.find({"user_id": user_id}).sort("date", -1)
+    results = []
+
+    for entry in cursor:
+        entry["_id"] = str(entry["_id"])  # ✅ Convert ObjectId to string for frontend use
+        results.append(entry)
+
+    return results
+
+
 @app.get("/stats/{user_id}")
 def user_stats(user_id: str):
-    entries = get_entries_by_user(user_id)
+    from collections import Counter
+    entries = list(collection.find({"user_id": user_id}, {"_id": 0}))
     if not entries:
         return {"message": "No entries found"}
 
-    all_emotions = [e for entry in entries for e in entry.get("emotions", [])]
-    all_topics = [t for entry in entries for t in entry.get("topics", [])]
-    word_counts = [len(entry.get("raw_input", "").split()) for entry in entries]
-    dates = sorted([entry.get("date", "") for entry in entries])
+    all_emotions = [emotion for e in entries for emotion in e.get("emotions", [])]
+    all_topics = [topic for e in entries for topic in e.get("topics", [])]
+    word_counts = [len(e.get("raw_input", "").split()) for e in entries if e.get("raw_input")]
+    top_emotions = [e for e, _ in Counter(all_emotions).most_common(3)]
+    top_topics = [t for t, _ in Counter(all_topics).most_common(3)]
+    dates = sorted([e.get("date", "") for e in entries if "date" in e])
 
     return {
         "total_entries": len(entries),
         "avg_words_per_entry": sum(word_counts) // len(word_counts) if word_counts else 0,
-        "top_emotions": [e for e, _ in Counter(all_emotions).most_common(3)],
-        "most_common_topics": [t for t, _ in Counter(all_topics).most_common(3)],
+        "top_emotions": top_emotions,
+        "most_common_topics": top_topics,
         "first_entry_date": dates[0] if dates else "N/A",
-        "last_entry_date": dates[-1] if dates else "N/A",
+        "last_entry_date": dates[-1] if dates else "N/A"
     }
+
+@app.post("/therapist-login")
+async def therapist_login(request: Request):
+    form = await request.json()
+    password = form.get("password", "")
+
+    if password == THERAPIST_SECRET_KEY:
+        return {"status": "ok"}
+    else:
+        return JSONResponse(status_code=401, content={"message": "Unauthorized"})

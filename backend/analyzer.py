@@ -1,6 +1,6 @@
-import requests
 import os
 import json
+import requests
 from datetime import datetime
 from dotenv import load_dotenv
 
@@ -8,25 +8,38 @@ load_dotenv()
 
 OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
 MODEL_NAME = "mistralai/mistral-7b-instruct"
+API_URL = "https://openrouter.ai/api/v1/chat/completions"
 
 def extract_insights(text: str) -> dict:
-    """Extract summary, emotions, and topics from journal entry using LLM."""
+    """Analyze journal text using LLM and return structured insights."""
 
-    prompt = """
-You are a helpful therapy assistant. Analyze the following journal entry and return:
-- A brief 1–2 sentence summary
-- 2 to 4 emotional states the person might be experiencing
-- 2 to 4 relevant topics discussed
+    # Prompt for the LLM
+    journal_prompt = {
+        "role": "user",
+        "content": f"""
+You are a kind, thoughtful AI assistant helping people reflect on their journal entries. Read the journal below and:
 
-Respond ONLY in this JSON format:
+1. Summarize it in 1–2 sentences.
+2. Extract 2–4 key emotions.
+3. Extract 2–4 relevant topics.
+4. Identify 1–2 cognitive distortion patterns (if any).
+5. Suggest 2–3 follow-up questions a therapist might ask.
+6. Give 1 short gentle self-reflection tip (CBT-style). Example: "Try to reframe 'I'm not good enough' as 'I'm learning slowly and that's okay'."
+
+Respond in this JSON format:
 {{
   "summary": "...",
-  "emotions": ["...", "..."],
-  "topics": ["...", "..."]
+  "emotions": ["..."],
+  "topics": ["..."],
+  "cognitive_patterns": ["..."],
+  "suggested_questions": ["..."],
+  "tip": "..."
 }}
 
 Journal Entry:
-""" + text.strip()
+{text.strip()}
+"""
+    }
 
     headers = {
         "Authorization": f"Bearer {OPENROUTER_API_KEY}",
@@ -35,25 +48,29 @@ Journal Entry:
 
     payload = {
         "model": MODEL_NAME,
-        "messages": [
-            {"role": "user", "content": prompt}
-        ]
+        "messages": [journal_prompt]
     }
 
     try:
-        res = requests.post("https://openrouter.ai/api/v1/chat/completions", headers=headers, json=payload)
-        res.raise_for_status()
-        content = res.json()["choices"][0]["message"]["content"]
+        response = requests.post(API_URL, headers=headers, json=payload)
+        response.raise_for_status()
 
-        # Parse the model response safely
-        insights = json.loads(content.strip())
+        raw_content = response.json()["choices"][0]["message"]["content"]
+        insights = json.loads(raw_content.strip())
+
+        # Validate and fill missing keys
+        required_fields = ["summary", "emotions", "topics", "cognitive_patterns", "suggested_questions"]
+        for field in required_fields:
+            insights.setdefault(field, [])
 
     except Exception as e:
         print("[Analyzer] Error extracting insights:", e)
         insights = {
             "summary": "Unable to analyze.",
             "emotions": [],
-            "topics": []
+            "topics": [],
+            "cognitive_patterns": [],
+            "suggested_questions": []
         }
 
     insights["date"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")

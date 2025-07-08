@@ -1,7 +1,9 @@
 fastapi
-uvicorn
 pydantic
-pymongo
 requests
-python-dotenv
 openai
+httpx
+uvicorn[standard]
+pymongo
+python-dotenv
+jinja2
