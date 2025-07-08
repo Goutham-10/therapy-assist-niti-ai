@@ -102,6 +102,7 @@ document.addEventListener("DOMContentLoaded", () => {
               <td class="border px-2 py-1">${(entry.emotions || []).join(", ")}</td>
               <td class="border px-2 py-1">${(entry.topics || []).join(", ")}</td>
               <td class="border px-2 py-1">${entry.summary || "—"}</td>
+              <td class="border px-2 py-1">${entry.feedback || "—"}</td>
             </tr>`;
           historyTable.innerHTML += row;
         });
