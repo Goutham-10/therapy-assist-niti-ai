@@ -1,13 +1,15 @@
 document.addEventListener("DOMContentLoaded", () => {
   // 📌 Basic UI Elements
   const promptText = document.getElementById("prompt");
-  const submitBtn = document.getElementById("submitBtn");
+  
+  const insightsBox = document.getElementById("insights");
+  const historyBox = document.getElementById("historyBox");
   const journalInput = document.getElementById("journalInput");
   const userIdInput = document.getElementById("user_id");
   const resultBox = document.getElementById("resultBox");
-  const insightsBox = document.getElementById("insights");
+  
   const historyBtn = document.getElementById("historyBtn");
-  const historyBox = document.getElementById("historyBox");
+  
   const historyTable = document.getElementById("historyTable");
 
   // 🔄 Load Daily Prompt

@@ -1,9 +1,42 @@
-# .gitignore
-backend/env/
+# Python
 __pycache__/
-*.pyc
-*.pyo
-*.pyd
-.Python
-env/
+*.py[cod]
+*.egg-info/
 .env
+
+# VS Code
+.vscode/
+*.code-workspace
+
+# Environment
+env/
+venv/
+backend/env/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Pytest Cache
+.pytest_cache/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Mongo dump (optional)
+dump/
+*.bson
+*.gz
+
+# Docker
+*.pid
+*.sock
+
+# Frontend cache (optional)
+node_modules/
+
+# Ignore sensitive app files
+prompt_tracker.json
