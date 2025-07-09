@@ -62,7 +62,7 @@ Journal Entry:
         print("[Analyzer] Error extracting insights:", e)
         insights = {}
 
-    # ✅ Ensure all expected fields are present
+    # Ensure all expected fields are present
     defaults = {
         "summary": "Unable to summarize.",
         "emotions": [],

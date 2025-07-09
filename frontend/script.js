@@ -1,5 +1,5 @@
 // ─────────────────────────────────────────────────────────────
-// 🌱 INITIAL SETUP: DOM ELEMENTS
+//  INITIAL SETUP: DOM ELEMENTS
 // ─────────────────────────────────────────────────────────────
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const voicePreview = document.getElementById("voicePreview");
 
   // ─────────────────────────────────────────────────────────────
-  // 🔄 LOAD DAILY PROMPT
+  //  LOAD DAILY PROMPT
   // ─────────────────────────────────────────────────────────────
 
   fetch("/prompt")
@@ -32,11 +32,11 @@ document.addEventListener("DOMContentLoaded", () => {
     })
     .catch(err => {
       console.error("Prompt load error:", err);
-      promptText.textContent = "⚠️ Failed to load prompt.";
+      promptText.textContent = " Failed to load prompt.";
     });
 
   // ─────────────────────────────────────────────────────────────
-  // ✍️ SUBMIT JOURNAL ENTRY
+  //  SUBMIT JOURNAL ENTRY
   // ─────────────────────────────────────────────────────────────
 
   submitBtn.addEventListener("click", () => {
@@ -62,10 +62,10 @@ document.addEventListener("DOMContentLoaded", () => {
         return res.json();
       })
       .then(data => {
-        tipBox.textContent = `💡 Tip: ${data.tip || "Reflect on your thoughts a bit more."}`;
+        tipBox.textContent = ` Tip: ${data.tip || "Reflect on your thoughts a bit more."}`;
       })
       .catch(err => {
-        tipBox.textContent = `⚠️ Something went wrong: ${err.message}`;
+        tipBox.textContent = ` Something went wrong: ${err.message}`;
       });
   });
   
@@ -76,7 +76,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   // ─────────────────────────────────────────────────────────────
-  // 📚 VIEW JOURNAL HISTORY
+  // VIEW JOURNAL HISTORY
   // ─────────────────────────────────────────────────────────────
 
   historyBtn.addEventListener("click", () => {
@@ -114,14 +114,14 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // ─────────────────────────────────────────────────────────────
-  // 🎙️ VOICE INPUT MODULE
+  //  VOICE INPUT MODULE
   // ─────────────────────────────────────────────────────────────
 
   let recognition;
   let isRecording = false;
   let finalTranscript = '';
 
-  // ✅ Create and configure recognition object
+  //  Create and configure recognition object
   function createRecognition() {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     const rec = new SpeechRecognition();
@@ -145,13 +145,13 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       const display = (finalTranscript + interim).trim();
-      voicePreview.textContent = display ? `🎤 ${display}` : "🎤 Listening...";
+      voicePreview.textContent = display ? ` ${display}` : "🎤 Listening...";
       voicePreview.style.height = "auto";
       voicePreview.style.height = voicePreview.scrollHeight + "px";
     };
 
     rec.onerror = (e) => {
-      voicePreview.textContent = `❌ Error: ${e.error}`;
+      voicePreview.textContent = ` Error: ${e.error}`;
       console.error("Recognition error:", e);
       stopRecording();
     };
@@ -175,28 +175,28 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
       isRecording = true;
       finalTranscript = '';
-      startMic.textContent = "⏹️ Stop Voice";
+      startMic.textContent = "Stop Voice";
       recognition = createRecognition();
       recognition.start();
     } catch (error) {
       console.error("Start failed:", error);
-      voicePreview.textContent = "❌ Could not start recording.";
+      voicePreview.textContent = "Could not start recording.";
       stopRecording();
     }
   }
 
-  // 🛑 Stop recording
+  //  Stop recording
   function stopRecording() {
     isRecording = false;
     if (recognition) recognition.stop();
     startMic.textContent = "🎙️ Start Voice";
 
     voicePreview.textContent = finalTranscript.trim()
-      ? `🎤 ${finalTranscript.trim()}`
-      : "⏹️ Voice stopped.";
+      ? ` ${finalTranscript.trim()}`
+      : " Voice stopped.";
   }
 
-  // 🎛️ Button handlers
+  //  Button handlers
   startMic.addEventListener("click", () => {
     isRecording ? stopRecording() : startRecording();
   });
@@ -213,16 +213,16 @@ document.addEventListener("DOMContentLoaded", () => {
       journalInput.value += journalInput.value.trim()
         ? `\n${text}`
         : text;
-      voicePreview.textContent = "✅ Added to input box.";
+      voicePreview.textContent = " Added to input box.";
       finalTranscript = '';
     } else {
-      voicePreview.textContent = "❌ No valid transcript to add.";
+      voicePreview.textContent = " No valid transcript to add.";
     }
   });
 
-  // 🛑 Fallback if speech API not supported
+  //  Fallback if speech API not supported
   if (!("webkitSpeechRecognition" in window || "SpeechRecognition" in window)) {
-    voicePreview.textContent = "❌ Your browser doesn't support voice input.";
+    voicePreview.textContent = " Your browser doesn't support voice input.";
     startMic.disabled = true;
     confirmVoice.disabled = true;
   }

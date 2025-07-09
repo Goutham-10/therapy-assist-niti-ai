@@ -5,31 +5,31 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Between.The.Sessions – Journal</title>
 
-  <!-- ✅ Tailwind CSS -->
+  <!--  Tailwind CSS -->
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
   
-  <!-- ✅ Main Script -->
+  <!--  Main Script -->
   <script src="/static/script.js" defer></script>
 </head>
 <body class="bg-gradient-to-br from-pink-100 via-purple-100 to-sky-100 min-h-screen text-gray-800 font-sans p-6">
   <div class="max-w-4xl mx-auto bg-white p-6 rounded-2xl shadow-xl space-y-5">
 
-    <!-- 🟣 Header -->
+    <!-- Header -->
     <h1 class="text-3xl font-bold text-purple-700">Between.The.Sessions</h1>
 
-    <!-- 🧑 User ID -->
+    <!-- User ID -->
     <div>
       <label class="font-medium text-gray-700">Your User ID:</label>
       <input id="user_id" type="text" class="w-full p-2 mt-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-300" placeholder="e.g. goutham01" />
     </div>
 
-    <!-- 📜 Daily Prompt -->
+    <!-- Daily Prompt -->
     <div>
       <p class="font-medium text-gray-700">Today's Prompt:</p>
       <div id="prompt" class="p-3 mt-1 bg-purple-50 border border-purple-200 rounded-lg text-purple-900">Loading prompt...</div>
     </div>
 
-    <!-- 🎤 Voice Transcription -->
+    <!-- Voice Transcription -->
     <div>
       <p class="font-medium text-gray-700 mb-1">Voice Transcription:</p>
       <div class="space-x-2 mb-2">
@@ -39,21 +39,21 @@
       <p id="voicePreview" class="w-full h-24 overflow-y-auto p-2 bg-gray-100 border rounded-lg text-sm whitespace-pre-line text-gray-700">Transcript will appear here...</p>
     </div>
 
-    <!-- 📝 Journal Textarea -->
+    <!-- Journal Textarea -->
     <div>
       <label class="font-medium text-gray-700">Your Journal Entry:</label>
       <textarea id="journalInput" rows="6" class="w-full p-3 mt-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-200" placeholder="Type or record your journal entry..."></textarea>
     </div>
 
-    <!-- ✅ Submit Button -->
+    <!-- Submit Button -->
     <button id="submitBtn" class="w-full mt-3 bg-pink-500 text-white px-4 py-2 rounded-lg hover:bg-pink-600 transition">
        Submit Entry
     </button>
 
-    <!-- 💡 AI-Generated Tip -->
+    <!-- AI-Generated Tip -->
     <div id="tipBox" class="hidden mt-4 p-3 rounded-xl bg-green-50 border border-green-200 text-green-800 font-medium shadow-sm"></div>
 
-    <!-- 📚 History Button -->
+    <!-- History Button -->
     <button id="historyBtn" class="w-full mt-4 bg-gray-700 text-white px-4 py-2 rounded-lg hover:bg-gray-800 transition">
        View Journal History
     </button>

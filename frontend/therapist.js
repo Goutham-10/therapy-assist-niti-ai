@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
-  // 🔐 AUTH & UI ELEMENTS
+  //  AUTH & UI ELEMENTS
   const loginBox = document.getElementById("loginBox");
   const dashboardBox = document.getElementById("dashboardBox");
   const loginBtn = document.getElementById("loginBtn");
@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const tabJournal = document.getElementById("tabJournal");
   const tabStats = document.getElementById("tabStats");
 
-  // 🔐 LOGIN HANDLER
+  //  LOGIN HANDLER
   loginBtn.addEventListener("click", async () => {
     const password = therapistPasswordInput.value.trim();
     loginError.classList.add("hidden");
@@ -46,7 +46,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // 🔁 TAB SWITCHING
+  //  TAB SWITCHING
   function switchTab(tab) {
     if (tab === "journal") {
       journalBox.classList.remove("hidden");
@@ -64,7 +64,7 @@ document.addEventListener("DOMContentLoaded", () => {
   tabJournal.addEventListener("click", () => switchTab("journal"));
   tabStats.addEventListener("click", () => switchTab("stats"));
 
-  // 📥 LOAD CLIENTS
+  //  LOAD CLIENTS
   async function loadClients() {
     try {
       console.log("Loading clients...");
@@ -74,7 +74,7 @@ document.addEventListener("DOMContentLoaded", () => {
       console.log("Clients data:", data);
 
       if (!data.clients || !data.clients.length) {
-        alert("⚠️ No clients found. Ask users to submit journal entries.");
+        alert(" No clients found. Ask users to submit journal entries.");
         return;
       }
 
@@ -92,7 +92,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // 📖 LOAD JOURNALS & STATS
+  //  LOAD JOURNALS & STATS
   clientSelect.addEventListener("change", async () => {
     const userId = clientSelect.value;
     if (!userId) return;
@@ -162,12 +162,12 @@ document.addEventListener("DOMContentLoaded", () => {
       const stats = await res.json();
 
       statsData.innerHTML = `
-        <p>📝 <strong>Total entries:</strong> ${stats.total_entries ?? 0}</p>
-        <p>✍️ <strong>Avg. words per entry:</strong> ${stats.avg_words_per_entry ?? 0}</p>
-        <p>🎭 <strong>Top emotions:</strong> ${(stats.top_emotions ?? []).join(", ")}</p>
-        <p>🧩 <strong>Common topics:</strong> ${(stats.most_common_topics ?? []).join(", ")}</p>
-        <p>📅 <strong>First entry:</strong> ${stats.first_entry_date ?? "—"}</p>
-        <p>📅 <strong>Last entry:</strong> ${stats.last_entry_date ?? "—"}</p>
+        <p> <strong>Total entries:</strong> ${stats.total_entries ?? 0}</p>
+        <p> <strong>Avg. words per entry:</strong> ${stats.avg_words_per_entry ?? 0}</p>
+        <p> <strong>Top emotions:</strong> ${(stats.top_emotions ?? []).join(", ")}</p>
+        <p> <strong>Common topics:</strong> ${(stats.most_common_topics ?? []).join(", ")}</p>
+        <p> <strong>First entry:</strong> ${stats.first_entry_date ?? "—"}</p>
+        <p> <strong>Last entry:</strong> ${stats.last_entry_date ?? "—"}</p>
       `;
     } catch (err) {
       console.error("Error fetching stats:", err);
@@ -175,7 +175,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // 💬 FEEDBACK HANDLER
+  //  FEEDBACK HANDLER
   document.addEventListener("click", (e) => {
     if (e.target.classList.contains("save-feedback")) {
       const row = e.target.closest("tr");
@@ -193,11 +193,11 @@ document.addEventListener("DOMContentLoaded", () => {
       })
         .then((res) => {
           if (!res.ok) throw new Error("Failed to save feedback");
-          alert("✅ Feedback saved successfully!");
+          alert(" Feedback saved successfully!");
         })
         .catch((err) => {
           console.error("Feedback error:", err);
-          alert("❌ Could not save feedback.");
+          alert(" Could not save feedback.");
         });
     }
   });

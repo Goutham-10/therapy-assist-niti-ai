@@ -108,7 +108,7 @@ def get_entries_by_user(user_id: str):
     results = []
 
     for entry in cursor:
-        entry["_id"] = str(entry["_id"])  # ✅ Convert ObjectId to string for frontend use
+        entry["_id"] = str(entry["_id"])  #  Convert ObjectId to string for frontend use
         results.append(entry)
 
     print(f"[API] Found {len(results)} entries for user {user_id}")

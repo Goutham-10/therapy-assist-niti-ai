@@ -15,7 +15,7 @@ class JournalEntry(BaseModel):
     tip: Optional[str]
     date: str
     source: Optional[str] = "text"
-    therapist_feedback: Optional[str] = ""  # 🆕 Add this line
+    therapist_feedback: Optional[str] = ""  
 
 class FeedbackRequest(BaseModel):
     entry_id: str
