@@ -4,7 +4,7 @@
 
 ---
 ### 🔗 **Live demo** (EC2 hosted – HTTP only): `http://ec2-3-82-229-226.compute-1.amazonaws.com:8000/`
-
+### (Note: Voice mode doesn't work with live url due to lack of https connectio)
 ## 🚀 Key Features
 
 - 📝 **Voice or Text Journaling** – Clients can submit daily reflections using voice or text
