@@ -11,7 +11,7 @@ from backend.routes.prompt import router as prompt_router
 from backend.routes.journal import router as journal_router
 from backend.routes.clients import router as clients_router
 from backend.routes.stats import router as stats_router
-# from backend.routes.auth import router as auth_router
+from backend.routes.auth import router as auth_router
 
 app = FastAPI()
 
@@ -40,4 +40,4 @@ app.include_router(prompt_router)
 app.include_router(journal_router)
 app.include_router(clients_router)
 app.include_router(stats_router)
-# app.include_router(auth_router)
+app.include_router(auth_router)
