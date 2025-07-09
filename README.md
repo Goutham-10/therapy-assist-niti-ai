@@ -64,7 +64,7 @@ docker-compose up --build
 
 ## 🧠 Architecture
 
-image.png
+![architecture](architecture.png)
 ---
 
 ## ☁️ EC2 Deployment
