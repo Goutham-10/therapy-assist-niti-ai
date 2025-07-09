@@ -98,10 +98,12 @@ def fetch_journal_history():
 @app.get("/clients")
 def list_clients():
     users = get_all_user_ids()
+    print(f"[API] Found {len(users)} clients: {users}")
     return {"clients": users}
 
 @app.get("/log/{user_id}")
 def get_entries_by_user(user_id: str):
+    print(f"[API] Fetching entries for user: {user_id}")
     cursor = collection.find({"user_id": user_id}).sort("date", -1)
     results = []
 
@@ -109,6 +111,7 @@ def get_entries_by_user(user_id: str):
         entry["_id"] = str(entry["_id"])  # ✅ Convert ObjectId to string for frontend use
         results.append(entry)
 
+    print(f"[API] Found {len(results)} entries for user {user_id}")
     return results
 
 

@@ -67,8 +67,11 @@ document.addEventListener("DOMContentLoaded", () => {
   // 📥 LOAD CLIENTS
   async function loadClients() {
     try {
+      console.log("Loading clients...");
       const res = await fetch("/clients");
       const data = await res.json();
+      
+      console.log("Clients data:", data);
 
       if (!data.clients || !data.clients.length) {
         alert("⚠️ No clients found. Ask users to submit journal entries.");
@@ -82,6 +85,7 @@ document.addEventListener("DOMContentLoaded", () => {
         option.textContent = id;
         clientSelect.appendChild(option);
       });
+      console.log("Clients loaded successfully");
     } catch (err) {
       console.error("Error fetching clients:", err);
       alert("Could not load clients.");
@@ -102,8 +106,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
   async function loadJournalEntries(userId) {
     try {
+      console.log("Loading journal entries for user:", userId);
       const res = await fetch(`/log/${userId}`);
       const entries = await res.json();
+      
+      console.log("Received entries:", entries);
 
       journalTable.innerHTML = "";
 
@@ -118,6 +125,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const fragment = document.createDocumentFragment();
 
       entries.forEach((entry) => {
+        console.log("Processing entry:", entry);
         const row = document.createElement("tr");
         row.innerHTML = `
           <td class="border px-2 py-1">${entry.date || "-"}</td>
@@ -141,6 +149,7 @@ document.addEventListener("DOMContentLoaded", () => {
       });
 
       journalTable.appendChild(fragment);
+      console.log("Journal entries loaded successfully");
     } catch (err) {
       console.error("Error loading journals:", err);
       alert("Failed to load journal entries.");
