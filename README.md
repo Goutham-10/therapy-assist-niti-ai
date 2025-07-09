@@ -3,7 +3,7 @@
 > *“Helping clients reflect. Helping therapists stay in sync.”*  
 
 ---
-### **Live demo** (EC2 hosted – HTTP only): `http://ec2-3-82-229-226.compute-1.amazonaws.com:8000/`
+### **Live demo** (EC2 hosted – HTTP only): `www.betweenthesessions.space` (`http://ec2-3-82-229-226.compute-1.amazonaws.com:8000/`) 
 ### (Note: Voice mode doesn't work with live url due to lack of https connection && use chrome browser for voice mode in local)
 
 ## Key Features
