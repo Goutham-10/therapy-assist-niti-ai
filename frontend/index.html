@@ -5,80 +5,79 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Between.The.Sessions – Journal</title>
 
-  <!--  Tailwind CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-  
-  <!--  Main Script -->
-  <script src="/static/js/script.js" defer></script>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="/static/css/style.css" />
-
-
+  <script src="/static/js/script.js" defer></script>
 </head>
-<body class="bg-gradient-to-br from-pink-100 via-purple-100 to-sky-100 min-h-screen text-gray-800 font-sans p-6">
-  <div class="max-w-4xl mx-auto bg-white p-6 rounded-2xl shadow-xl space-y-5">
 
-    <!-- Header -->
-    <h1 class="text-3xl font-bold text-purple-700">Between.The.Sessions</h1>
+<body class="bg-gradient-to-br from-rose-100 via-indigo-50 to-blue-100 text-gray-800 font-sans antialiased min-h-screen p-4 sm:p-6">
 
-    <!-- User ID -->
+  <div class="max-w-3xl mx-auto bg-white/90 backdrop-blur-xl rounded-3xl shadow-2xl p-6 sm:p-8 space-y-6">
+
+    <!-- 🧠 Title -->
+    <h1 class="text-3xl sm:text-4xl font-extrabold text-center text-purple-700 tracking-tight">Between.The.Sessions</h1>
+    <p class="text-center text-gray-600 text-sm">Your personal space for guided reflection</p>
+
+    <!-- 👤 User ID -->
     <div>
-      <label class="font-medium text-gray-700">Your User ID:</label>
-      <input id="user_id" type="text" class="w-full p-2 mt-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-300" placeholder="e.g. goutham01" />
+      <label for="user_id" class="block font-medium text-gray-700 mb-1">Your ID</label>
+      <input id="user_id" type="text" class="w-full p-2 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-300" placeholder="e.g. goutham01">
     </div>
 
-    <!-- Daily Prompt -->
+    <!-- 📝 Prompt -->
     <div>
-      <p class="font-medium text-gray-700">Today's Prompt:</p>
-      <div id="prompt" class="p-3 mt-1 bg-purple-50 border border-purple-200 rounded-lg text-purple-900">Loading prompt...</div>
+      <p class="font-medium text-gray-700 mb-1">Today's Prompt</p>
+      <div id="prompt" class="p-3 rounded-xl bg-purple-50 border border-purple-200 text-purple-900 text-sm sm:text-base">Loading prompt...</div>
     </div>
 
-    <!-- Voice Transcription -->
+    <!-- 🎙️ Voice -->
     <div>
-      <p class="font-medium text-gray-700 mb-1">Voice Transcription:</p>
-      <div class="space-x-2 mb-2">
-        <button id="startMic" class="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600"> Start Voice</button>
-        <button id="confirmVoice" class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"> Use Transcript</button>
+      <p class="font-medium text-gray-700 mb-1">Voice Transcription</p>
+      <div class="flex flex-col sm:flex-row sm:space-x-3 space-y-2 sm:space-y-0 mb-2">
+        <button id="startMic" class="flex-1 bg-green-500 text-white py-2 rounded-lg hover:bg-green-600 transition-all">🎙️ Start</button>
+        <button id="confirmVoice" class="flex-1 bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition-all">✔ Use Transcript</button>
       </div>
       <p id="voicePreview" class="w-full h-24 overflow-y-auto p-2 bg-gray-100 border rounded-lg text-sm whitespace-pre-line text-gray-700">Transcript will appear here...</p>
     </div>
 
-    <!-- Journal Textarea -->
+    <!-- 🧾 Journal -->
     <div>
-      <label class="font-medium text-gray-700">Your Journal Entry:</label>
-      <textarea id="journalInput" rows="6" class="w-full p-3 mt-1 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-200" placeholder="Type or record your journal entry..."></textarea>
+      <label for="journalInput" class="block font-medium text-gray-700 mb-1">Your Journal Entry</label>
+      <textarea id="journalInput" rows="6" class="w-full p-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-pink-200" placeholder="Type or speak your reflection..."></textarea>
     </div>
 
-    <!-- Submit Button -->
-    <button id="submitBtn" class="w-full mt-3 bg-pink-500 text-white px-4 py-2 rounded-lg hover:bg-pink-600 transition">
-       Submit Entry
+    <!-- 🚀 Submit -->
+    <button id="submitBtn" class="w-full bg-pink-500 text-white py-3 rounded-xl font-semibold hover:bg-pink-600 transition-all">
+      ✨ Submit Entry
     </button>
 
-    <!-- AI-Generated Tip -->
-    <div id="tipBox" class="hidden mt-4 p-3 rounded-xl bg-green-50 border border-green-200 text-green-800 font-medium shadow-sm"></div>
+    <!-- 💡 Tip -->
+    <div id="tipBox" class="hidden mt-4 p-3 rounded-xl bg-green-50 border border-green-200 text-green-800 text-sm shadow-sm"></div>
 
-    <!-- History Button -->
-    <button id="historyBtn" class="w-full mt-4 bg-gray-700 text-white px-4 py-2 rounded-lg hover:bg-gray-800 transition">
-       View Journal History
+    <!-- 📚 View History -->
+    <button id="historyBtn" class="w-full bg-gray-800 text-white py-3 rounded-xl font-semibold hover:bg-gray-900 transition-all">
+      📖 View Past Entries
     </button>
 
-    <!--  History Section -->
-    <div id="historyBox" class="hidden mt-4">
-      <h2 class="text-xl font-semibold text-purple-800 mb-2"> Past Entries</h2>
-      <table class="w-full text-sm border-collapse border border-gray-300 rounded overflow-hidden">
-        <thead class="bg-purple-50 text-purple-800">
-          <tr>
-            <th class="border px-3 py-2">Date</th>
-            <th class="border px-3 py-2">Emotions</th>
-            <th class="border px-3 py-2">Topics</th>
-            <th class="border px-3 py-2">Summary</th>
-            <th class="border px-3 py-2">Feedback</th>
-          </tr>
-        </thead>
-        <tbody id="historyTable" class="bg-white text-gray-700"></tbody>
-      </table>
+    <!-- 📖 History Table -->
+    <div id="historyBox" class="hidden mt-4 space-y-2">
+      <h2 class="text-xl font-bold text-purple-800">🗂️ Past Entries</h2>
+      <div class="overflow-x-auto rounded-lg border border-gray-300">
+        <table class="w-full text-sm bg-white rounded-lg overflow-hidden min-w-[600px]">
+          <thead class="bg-purple-100 text-purple-900 text-left">
+            <tr>
+              <th class="px-3 py-2 border-r">Date</th>
+              <th class="px-3 py-2 border-r">Emotions</th>
+              <th class="px-3 py-2 border-r">Topics</th>
+              <th class="px-3 py-2 border-r">Summary</th>
+              <th class="px-3 py-2">Therapist Feedback</th>
+            </tr>
+          </thead>
+          <tbody id="historyTable" class="divide-y divide-gray-200 text-gray-700"></tbody>
+        </table>
+      </div>
     </div>
-
-    
 
   </div>
 </body>
